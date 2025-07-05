@@ -5,7 +5,7 @@ from transformers import pipeline  # type: ignore
 
 
 class SpeechToText:
-    def __init__(self):
+    def __init__(self) -> None:
         self.pipe = pipeline(
             "automatic-speech-recognition",
             model="openai/whisper-base.en",

@@ -21,19 +21,19 @@ def get_config() -> configparser.ConfigParser:
         # Create a default config file
         config = configparser.ConfigParser()
         config["speech2caret"] = {
-            "# Example: keyboard_device_path": "/dev/input/by-path/pci-0000:00:1.0-usb-0:1:1.0-event-kbd",
+            "# example:\n# keyboard_device_path": "/dev/input/by-path/pci-0000:00:1.0-usb-0:1:1.0-event-kbd",
+            "# start_stop_key": "KEY_F11",
+            "# resume_pause_key": "KEY_F12",
+            "# audio_fp": "/tmp/tmp_audio.wav\n",  # nosec
             "keyboard_device_path": "",
-            "# Example: start_stop_key": "KEY_F11",
             "start_stop_key": "",
-            "# Example: resume_pause_key": "KEY_F12",
             "resume_pause_key": "",
-            "# Example: audio_fp": "/tmp/tmp_audio.wav",  # nosec
             "audio_fp": "/tmp/tmp_audio.wav",  # nosec
         }
         with open(CONFIG_FILE, "w") as f:
             f.write(
                 "# This is the configuration file for speech2caret.\n"
-                "# You can find an explanation of the options in the config.ini.example file in the project repository.\n"
+                "# You can find an explanation of the options in the GitHub README.md: https://github.com/asmith26/speech2caret\n\n"
             )
             config.write(f)
 

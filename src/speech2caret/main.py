@@ -7,7 +7,7 @@ from speech2caret.config import get_config
 
 def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str, audio_fp: Path) -> None:
     """Validate and return the inputs for the main function."""
-    if not keyboard_device_path:
+    if keyboard_device_path == Path('.'):
         raise ValueError("keyboard_device_path not set")
     if not keyboard_device_path.exists():
         raise ValueError(f"Keyboard device does not exist: {keyboard_device_path}")
