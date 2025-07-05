@@ -1,5 +1,7 @@
 # speech2caret
 
+<p align="center"><img src="./assets/speech2caret_logo.svg" alt="speech2caret logo" width="250"/></p>
+
 Use your speech to write to the current caret position!
 
 ## Goals
