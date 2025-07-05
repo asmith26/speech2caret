@@ -1,6 +1,6 @@
 [project]
 name = "speech2caret"
-version = "0.0.1"
+version = "0.1.0a1"
 description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -12,18 +12,13 @@ dependencies = [
     "transformers>=4.53.0",
 ]
 
-#[tool.uv.sources]
-#torch = [
-#    { index = "pytorch-cpu" },
-#]
-#torchvision = [
-#    { index = "pytorch-cpu" },
-#]
-#
-#[[tool.uv.index]]
-#name = "pytorch-cpu"
-#url = "https://download.pytorch.org/whl/cpu"
-#explicit = true
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
 
 [dependency-groups]
 dev = [
