@@ -30,7 +30,7 @@ def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_paus
 
 async def listen_keyboard_events(
     keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str, audio_fp: Path
-) -> None:
+) -> None:  # pragma: no cover
     # Put import statements here to improve CLI performance.
     import evdev
 
@@ -77,7 +77,7 @@ async def listen_keyboard_events(
             audio_fp.unlink(missing_ok=True)
 
 
-def main() -> None:
+def main() -> None:  # pragma: no cover
     """Use your speech to write the current caret position!"""
     config = get_config()
     parser = argparse.ArgumentParser(description="Use your speech to write to the current caret position.")
@@ -122,5 +122,5 @@ def main() -> None:
         sys.exit(0)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     main()

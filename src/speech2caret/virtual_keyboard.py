@@ -37,7 +37,7 @@ class VirtualKeyboard:
         time.sleep(0.01)  # this helps prevent the letters from getting jumbled up
 
     def type_text(self, text: str) -> None:
-        for char in text.strip():
+        for char in text:
             if char.isalpha():
                 key = f"KEY_{char.upper()}"
                 self._send_key(key, shift=char.isupper())

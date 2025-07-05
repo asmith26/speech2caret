@@ -69,11 +69,3 @@ def test_type_digits(mock_input_device):
     vk.device.write.assert_any_call(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_2, 1)
     vk.device.write.assert_any_call(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_3, 1)
     vk.device.syn.call_count == 3
-
-
-@patch("evdev.InputDevice", return_value=make_mock_device())
-def test_whitespace_is_stripped(mock_input_device):
-    vk = VirtualKeyboard(Path("/dev/input/event0"))
-    vk.type_text("  a ")
-    vk.device.write.assert_any_call(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_A, 1)
-    vk.device.syn.assert_called_once()
