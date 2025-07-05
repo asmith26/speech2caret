@@ -50,7 +50,7 @@ You will need to edit this file to set:
 * `start_stop_key` and `resume_pause_key`: The keyboard keycodes you want to use to start/stop and resume/pause recording. A list of valid keycode names can be found online (e.g. [here](https://github.com/torvalds/linux/blob/a79a588fc1761dc12a3064fc2f648ae66cea3c5a/include/uapi/linux/input-event-codes.h#L65)). 
    Equally, you should be able to run the following to determine the keycode name when you press keys on your keyboard:
 
-   ```python
+```python
 # You can create a suitable python environment to run this with: uvx --from speech2caret python
 from evdev import InputDevice, categorize, ecodes, KeyEvent
 
