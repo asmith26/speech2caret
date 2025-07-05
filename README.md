@@ -2,15 +2,12 @@
 
 Use your speech to write to the current caret position!
 
-An open-source, local-first, and minimalist tool for speech-to-text.
-
-### Goals
+## Goals
 
 - ✅ **Simple**: A minimalist tool that does one thing well.
 - ✅ **Private**: Your voice data is processed locally and is never sent to the cloud.
 - ✅ **Efficient**: Optimised for low CPU and memory usage (built using event-driven architecture to react instantly to key presses without wasting system resources).
 
-### Compatibility
 **Note**: This tool has only been tested on Linux (Ubuntu). It is not expected to work on other operating systems (at this time).
 
 ## Installation
@@ -26,7 +23,7 @@ sudo apt install libportaudio2 ffmpeg
 
 ### 2. Grant Permissions
 
-To read keyboard events and type text, the tool needs access to your input devices. Add your user to the `input` group to grant the necessary permissions:
+To read keyboard events and type text, the tool needs access to your keyboard input device. Add your user to the `input` group to grant the necessary permissions:
 
 ```bash
 sudo usermod -aG input $USER
@@ -57,7 +54,7 @@ The first time you run `speech2caret`, it will create a configuration file at `~
 You must edit this file to set the following options:
 
 #### `keyboard_device_path`
-This is the path to your keyboard's input device. You can find the correct path by running the command below and looking for an entry that ends with `-event-kbd`.
+This is the path to your keyboard input device. You can find the path either following [this](https://python-evdev.readthedocs.io/en/latest/usage.html#listing-accessible-event-devices), or by running the command below and looking for an entry that ends with `-event-kbd`.
 
 ```bash
 ls /dev/input/by-path/
@@ -66,12 +63,13 @@ ls /dev/input/by-path/
 #### `start_stop_key` and `resume_pause_key`
 These are the names of the keys you'll press to control the application.
 
-To find the correct name for a key, you can use the provided Python script. First, ensure you have your `keyboard_device_path` from the step above, then run this command:
+To find the correct name for a key, you can use the provided Python script below. First, ensure you have your `keyboard_device_path` from the step above, then run this command:
 
 ```bash
 uvx --from evdev python -c '
-from evdev import InputDevice, categorize, ecodes, KeyEvent
 keyboard_device_path = "PASTE_YOUR_KEYBOARD_DEVICE_PATH_HERE"
+
+from evdev import InputDevice, categorize, ecodes, KeyEvent
 dev = InputDevice(keyboard_device_path)
 print(f"Listening for key presses on {dev.name}...")
 for event in dev.read_loop():
