@@ -30,6 +30,7 @@ async def test_recording_cycle(fake_audio_fp):
         mock_stream = mock_stream_class.return_value
         mock_stream.__enter__.return_value = mock_stream
         mock_stream.__exit__.return_value = None
+
         # Simulate appending data during recording
         async def simulate_recording():
             recorder._callback(dummy_audio_data, None, None, None)
@@ -38,6 +39,7 @@ async def test_recording_cycle(fake_audio_fp):
             assert recorder.is_recording == False
             recorder._callback(dummy_audio_data, None, None, None)
             recorder.save_recording()
+
         # Start recording and stop after a brief moment
         await asyncio.gather(recorder.start_recording(), simulate_recording())
 

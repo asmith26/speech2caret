@@ -2,9 +2,6 @@ help:                                            ## Show help docs
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
 
 # === CI COMMANDS ===
-#clean-all:                                       ## Remove all coverage, lint, test artifacts
-#	rm -rf **/*.egg-info **/__pycache__ **/*.pyc .coverage .ruff_cache/ .mypy_cache/
-
 check-types:                                     ## Check static typing
 	uv run mypy --strict --ignore-missing-imports --implicit-optional --allow-untyped-decorators --disable-error-code import-untyped --disable-error-code no-redef src
 	# todo https://github.com/astral-sh/ty

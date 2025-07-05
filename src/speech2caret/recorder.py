@@ -20,7 +20,6 @@ class Recorder:
         # Use an asyncio.Event to signal when recording should stop
         self._stop_event = asyncio.Event()
 
-
         self.delete_audio_file()  # Always start fresh
 
     def delete_audio_file(self) -> None:
