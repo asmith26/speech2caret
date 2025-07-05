@@ -31,7 +31,7 @@ class Recorder:
             logger.debug(status)
         self.audio_data.append(indata.copy())
 
-    async def start_recording(self, is_resume: bool=False) -> None:
+    async def start_recording(self, is_resume: bool = False) -> None:
         self.is_recording = True
         self.is_paused = False
         # Clear the stop event flag, allowing the recording loop to run.
