@@ -27,8 +27,8 @@ def get_config() -> configparser.ConfigParser:
             "start_stop_key": "",
             "# Example: resume_pause_key": "KEY_F12",
             "resume_pause_key": "",
-            "# Example: audio_fp": "/tmp/tmp_audio.wav",
-            "audio_fp": "/tmp/tmp_audio.wav",
+            "# Example: audio_fp": "/tmp/tmp_audio.wav",  # nosec
+            "audio_fp": "/tmp/tmp_audio.wav",  # nosec
         }
         with open(CONFIG_FILE, "w") as f:
             f.write(

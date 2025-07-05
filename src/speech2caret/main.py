@@ -30,7 +30,7 @@ async def listen_keyboard_events(
     from speech2caret.virtual_keyboard import VirtualKeyboard
 
     recorder = Recorder(audio_fp)
-    stt = SpeechToText()
+    stt: SpeechToText = SpeechToText()
     vkeyboard = VirtualKeyboard(keyboard_device_path)
 
     print(f"Listening on {keyboard_device_path}\nStart/Stop: {start_stop_key}\nResume/Pause: {resume_pause_key}")
@@ -85,7 +85,7 @@ def main() -> None:
     parser.add_argument(
         "--audio-fp",
         type=Path,
-        default=config.get("speech2caret", "audio_fp", fallback="/tmp/tmp_audio.wav"),
+        default=config.get("speech2caret", "audio_fp", fallback="/tmp/tmp_audio.wav"),  # nosec
         help="Path to save the temporary audio file.",
     )
     args = parser.parse_args()
