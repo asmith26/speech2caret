@@ -17,6 +17,9 @@ jobs:
           enable-cache: true
           cache-dependency-glob: "uv.lock"
 
+      - name: Install apt dependencies
+        run: sudo apt install libportaudio2 ffmpeg
+
       - name: Install project
         run: uv sync
 
