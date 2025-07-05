@@ -18,10 +18,9 @@ class Recorder:
         self.audio_format = "int16"
         self.audio_data: List[np.ndarray] = []
         self.is_recording = False
+        self.is_paused = False
         # Use an asyncio.Event to signal when recording should stop
         self._stop_event = asyncio.Event()
-
-        self.delete_audio_file()  # Always start fresh
 
     def delete_audio_file(self) -> None:
         logger.info(f"Deleting audio file: {self.audio_fp}")
@@ -32,13 +31,14 @@ class Recorder:
             logger.debug(status)
         self.audio_data.append(indata.copy())
 
-    async def start_recording(self) -> None:
+    async def start_recording(self, is_resume: bool=False) -> None:
         self.is_recording = True
+        self.is_paused = False
         # Clear the stop event flag, allowing the recording loop to run.
         self._stop_event.clear()
 
         # If we're starting a new recording, clear the old audio data.
-        if not self.audio_fp.exists():
+        if not is_resume:
             self.audio_data = []
 
         with sounddevice.InputStream(
@@ -49,20 +49,26 @@ class Recorder:
 
     def pause_recording(self) -> None:
         self.is_recording = False
+        self.is_paused = True
         # Signal the event to stop the recording loop.
         self._stop_event.set()
 
     def save_recording(self) -> None:
         self.is_recording = False
+        self.is_paused = False
         # Signal the event to stop the recording loop.
         self._stop_event.set()
 
-        # Convert the list to a numpy array
-        audio_data = np.concatenate(self.audio_data, axis=0)
+        if not self.audio_fp:
+            logger.warning("No audio data recorded. Not saving.")
 
-        # Save the recorded data as a WAV file
-        with wave.open(str(self.audio_fp), "wb") as wf:
-            wf.setnchannels(self.channels)
-            wf.setsampwidth(self.sampwith)
-            wf.setframerate(self.sample_rate)
-            wf.writeframes(audio_data.tobytes())
+        else:
+            # Convert the list to a numpy array
+            audio_data = np.concatenate(self.audio_data, axis=0)
+
+            # Save the recorded data as a WAV file
+            with wave.open(str(self.audio_fp), "wb") as wf:
+                wf.setnchannels(self.channels)
+                wf.setsampwidth(self.sampwith)
+                wf.setframerate(self.sample_rate)
+                wf.writeframes(audio_data.tobytes())

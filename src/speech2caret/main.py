@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import sys
+import tempfile
 from pathlib import Path
 
 from loguru import logger
@@ -8,7 +9,7 @@ from loguru import logger
 from speech2caret.config import get_config
 
 
-def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str, audio_fp: Path) -> None:
+def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str) -> None:
     """Validate and return the inputs for the main function."""
     config_help = "Edit the config file (see https://github.com/asmith26/speech2caret/tree/main#configuration) or pass in CLI arguments (see `speech2caret --help`)"
     if keyboard_device_path == Path("."):
@@ -23,13 +24,12 @@ def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_paus
     if not resume_pause_key:
         logger.error(f"resume_pause_key not set. {config_help}.")
         sys.exit(1)
-    if audio_fp.suffix != ".wav":
-        logger.error("Audio file path must have a .wav extension.")
-        sys.exit(1)
 
 
 async def listen_keyboard_events(
-    keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str, audio_fp: Path
+    keyboard_device_path: Path,
+    start_stop_key: str,
+    resume_pause_key: str,
 ) -> None:  # pragma: no cover
     # Put import statements here to improve CLI performance.
     import evdev
@@ -38,43 +38,45 @@ async def listen_keyboard_events(
     from speech2caret.speech_to_text import SpeechToText
     from speech2caret.virtual_keyboard import VirtualKeyboard
 
-    recorder = Recorder(audio_fp)
-    stt: SpeechToText = SpeechToText()
-    vkeyboard = VirtualKeyboard(keyboard_device_path)
+    with tempfile.TemporaryDirectory() as temp_dir:
+        tmp_audio_fp = Path(temp_dir) / "speech2caret.wav"
+        recorder = Recorder(tmp_audio_fp)
+        stt: SpeechToText = SpeechToText()
+        vkeyboard = VirtualKeyboard(keyboard_device_path)
 
-    logger.info(f"Listening on {keyboard_device_path}")
-    logger.info(f"Start/Stop: {start_stop_key}")
-    logger.info(f"Resume/Pause: {resume_pause_key}")
+        logger.info(f"Listening on {keyboard_device_path}")
+        logger.info(f"Start/Stop: {start_stop_key}")
+        logger.info(f"Resume/Pause: {resume_pause_key}")
+        logger.info(f"Temporary audio file: {tmp_audio_fp}")
 
-    try:
-        async for event in vkeyboard.device.async_read_loop():
-            if event.type == evdev.ecodes.EV_KEY:
-                key_event: evdev.KeyEvent = evdev.categorize(event)  # type: ignore
-                if key_event.keystate == 1:
-                    if key_event.keycode == start_stop_key:
-                        if not recorder.is_recording:
-                            logger.info("=== Start recording ===")
-                            asyncio.create_task(recorder.start_recording())
-                        else:
-                            logger.info("Stopping recording...")
-                            recorder.save_recording()
-                            text = stt.transcribe(recorder.audio_fp)
-                            logger.info(f"Transcribed text: {text}")
-                            vkeyboard.type_text(text)
-                            recorder.delete_audio_file()
+        try:
+            async for event in vkeyboard.device.async_read_loop():
+                if event.type == evdev.ecodes.EV_KEY:
+                    key_event: evdev.KeyEvent = evdev.categorize(event)  # type: ignore
+                    if key_event.keystate == 1:
+                        if key_event.keycode == start_stop_key:
+                            if not recorder.is_recording:
+                                logger.info("=== Start recording ===")
+                                asyncio.create_task(recorder.start_recording())
+                            else:
+                                logger.info("Stopping recording...")
+                                recorder.save_recording()
+                                text = stt.transcribe(recorder.audio_fp)
+                                logger.info(f"Transcribed text: {text}")
+                                vkeyboard.type_text(text)
+                                recorder.delete_audio_file()
 
-                    elif key_event.keycode == resume_pause_key:
-                        if not recorder.is_recording:
-                            logger.info("Resuming recording...")
-                            asyncio.create_task(recorder.start_recording())
-                        else:
-                            logger.info("Pausing recording...")
-                            recorder.pause_recording()
-    finally:
-        logger.info("\n")
-        if audio_fp.exists():
-            logger.info("Cleaning up temporary audio file...")
-            audio_fp.unlink(missing_ok=True)
+                        elif key_event.keycode == resume_pause_key:
+                            if not recorder.is_recording and recorder.is_paused:
+                                logger.info("Resuming recording...")
+                                asyncio.create_task(recorder.start_recording(is_resume=True))
+                            elif recorder.is_recording and not recorder.is_paused:
+                                logger.info("Pausing recording...")
+                                recorder.pause_recording()
+                            elif not recorder.is_recording and not recorder.is_paused:
+                                logger.warning("You must start recording before resume/pause")
+        except Exception:
+            logger.exception("An unexpected error occurred in the event loop.")
 
 
 def main() -> None:  # pragma: no cover
@@ -99,22 +101,15 @@ def main() -> None:  # pragma: no cover
         default=config.get("speech2caret", "resume_pause_key", fallback=None),
         help="Key to resume/pause recording.",
     )
-    parser.add_argument(
-        "--audio-fp",
-        type=Path,
-        default=config.get("speech2caret", "audio_fp", fallback="/tmp/tmp_audio.wav"),  # nosec
-        help="Path to save the temporary audio file.",
-    )
     args = parser.parse_args()
 
-    validate_inputs(args.keyboard_device_path, args.start_stop_key, args.resume_pause_key, args.audio_fp)
+    validate_inputs(args.keyboard_device_path, args.start_stop_key, args.resume_pause_key)
     try:
         asyncio.run(
             listen_keyboard_events(
                 args.keyboard_device_path,
                 args.start_stop_key,
                 args.resume_pause_key,
-                args.audio_fp,
             )
         )
     except KeyboardInterrupt:
