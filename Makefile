@@ -27,5 +27,5 @@ check-test-all: check-static-all run-tests       ## Run all checks/tests
 package-build:                                   ## Build Python package
 	uv build
 
-package-publish:                                 ## Publish Python package to PyPI
+package-release:                                 ## Publish Python package to PyPI
 	uv publish
