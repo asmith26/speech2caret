@@ -1,7 +1,6 @@
 import configparser
 from pathlib import Path
 
-
 CONFIG_DIR = Path.home() / ".config/speech2caret"
 CONFIG_FILE = CONFIG_DIR / "config.ini"
 
