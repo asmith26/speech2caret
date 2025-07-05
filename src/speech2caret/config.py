@@ -14,11 +14,8 @@ def get_config() -> configparser.ConfigParser:
     CONFIG_DIR.mkdir(exist_ok=True)
     config = configparser.ConfigParser()
 
-    if CONFIG_FILE.exists():
-        config.read(CONFIG_FILE)
-
-    else:
-        # Create a default config file
+    # Create a default config file
+    if not CONFIG_FILE.is_file():
         config["speech2caret"] = {
             "# example:\n# keyboard_device_path": "/dev/input/by-path/pci-0000:00:1.0-usb-0:1:1.0-event-kbd",
             "# start_stop_key": "KEY_F11",
@@ -36,4 +33,5 @@ def get_config() -> configparser.ConfigParser:
             )
             config.write(f)
 
+    config.read(CONFIG_FILE)
     return config

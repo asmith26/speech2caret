@@ -6,6 +6,7 @@ from typing import List
 import numpy as np
 import sounddevice
 from _sounddevice import ffi
+from loguru import logger
 
 
 class Recorder:
@@ -23,12 +24,12 @@ class Recorder:
         self.delete_audio_file()  # Always start fresh
 
     def delete_audio_file(self) -> None:
-        print(f"Deleting audio file: {self.audio_fp}")
+        logger.info(f"Deleting audio file: {self.audio_fp}")
         self.audio_fp.unlink(missing_ok=True)
 
     def _callback(self, indata: np.ndarray, frames: int, time: ffi.CData, status: sounddevice.CallbackFlags) -> None:
         if status:
-            print(status, flush=True)
+            logger.debug(status)
         self.audio_data.append(indata.copy())
 
     async def start_recording(self) -> None:

@@ -1,22 +1,31 @@
 import argparse
 import asyncio
+import sys
 from pathlib import Path
+
+from loguru import logger
 
 from speech2caret.config import get_config
 
 
 def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str, audio_fp: Path) -> None:
     """Validate and return the inputs for the main function."""
-    if keyboard_device_path == Path('.'):
-        raise ValueError("keyboard_device_path not set")
+    config_help = "Edit the config file (see https://github.com/asmith26/speech2caret/tree/main#configuration) or pass in CLI arguments (see `speech2caret --help`)"
+    if keyboard_device_path == Path("."):
+        logger.error(f"keyboard_device_path not set. {config_help}.")
+        sys.exit(1)
     if not keyboard_device_path.exists():
-        raise ValueError(f"Keyboard device does not exist: {keyboard_device_path}")
+        logger.error(f"Keyboard device does not exist: {keyboard_device_path}")
+        sys.exit(1)
     if not start_stop_key:
-        raise ValueError("start_stop_key not set")
+        logger.error(f"start_stop_key not set. {config_help}.")
+        sys.exit(1)
     if not resume_pause_key:
-        raise ValueError("resume_pause_key not set")
+        logger.error(f"resume_pause_key not set. {config_help}.")
+        sys.exit(1)
     if audio_fp.suffix != ".wav":
-        raise ValueError("Audio file path must have a .wav extension.")
+        logger.error("Audio file path must have a .wav extension.")
+        sys.exit(1)
 
 
 async def listen_keyboard_events(
@@ -33,7 +42,9 @@ async def listen_keyboard_events(
     stt: SpeechToText = SpeechToText()
     vkeyboard = VirtualKeyboard(keyboard_device_path)
 
-    print(f"Listening on {keyboard_device_path}\nStart/Stop: {start_stop_key}\nResume/Pause: {resume_pause_key}")
+    logger.info(f"Listening on {keyboard_device_path}")
+    logger.info(f"Start/Stop: {start_stop_key}")
+    logger.info(f"Resume/Pause: {resume_pause_key}")
 
     async for event in vkeyboard.device.async_read_loop():
         if event.type == evdev.ecodes.EV_KEY:
@@ -41,22 +52,22 @@ async def listen_keyboard_events(
             if key_event.keystate == 1:
                 if key_event.keycode == start_stop_key:
                     if not recorder.is_recording:
-                        print("Start recording...")
+                        logger.info("\nStart recording...")
                         asyncio.create_task(recorder.start_recording())
                     else:
-                        print("Stopping recording...")
+                        logger.info("Stopping recording...")
                         recorder.save_recording()
                         text = stt.transcribe(recorder.audio_fp)
-                        print("Transcribed text:", text)
+                        logger.info("Transcribed text:", text)
                         vkeyboard.type_text(text)
                         recorder.delete_audio_file()
 
                 elif key_event.keycode == resume_pause_key:
                     if not recorder.is_recording:
-                        print("Resuming recording...")
+                        logger.info("Resuming recording...")
                         asyncio.create_task(recorder.start_recording())
                     else:
-                        print("Pausing recording...")
+                        logger.info("Pausing recording...")
                         recorder.pause_recording()
 
 

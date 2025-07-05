@@ -1,7 +1,7 @@
 import pytest
 import configparser
 from unittest import mock
-from speech2caret.config import get_config, CONFIG_FILE
+from speech2caret.config import get_config
 
 @pytest.fixture
 def mock_config_dir(tmp_path):
@@ -9,7 +9,7 @@ def mock_config_dir(tmp_path):
         yield tmp_path
 
 def test_get_config_creates_file(mock_config_dir):
-    config_file = CONFIG_FILE
+    config_file = mock_config_dir / "config.ini"
     assert not config_file.exists()
 
     config = get_config()
@@ -31,7 +31,7 @@ def test_get_config_reads_existing_file(mock_config_dir):
         "resume_pause_key": "KEY_F2",
         "audio_fp": "/tmp/test.wav",
     }
-    with open(CONFIG_FILE, "w") as f:
+    with open(mock_config_dir / "config.ini", "w") as f:
         config.write(f)
 
     loaded_config = get_config()

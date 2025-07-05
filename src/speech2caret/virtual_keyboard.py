@@ -32,9 +32,9 @@ class VirtualKeyboard:
         if shift:
             self.device.write(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_LEFTSHIFT, 0)
 
-        # Process the above write events (1 character at a time)
-        # self.device.syn()  # type: ignore
-        # time.sleep(0.01)  # this helps prevent the letters from getting jumbled up
+        # Process the above write events
+        self.device.syn()  # type: ignore
+        time.sleep(0.01)  # this helps prevent the letters from getting jumbled up
 
     def type_text(self, text: str) -> None:
         for char in text.strip():
@@ -46,6 +46,3 @@ class VirtualKeyboard:
             elif char in self.CHAR_MAP:
                 shift = char in '!?:"_£'
                 self._send_key(self.CHAR_MAP[char], shift)
-
-        # Process the above write events (all characters together)
-        self.device.syn()  # type: ignore
