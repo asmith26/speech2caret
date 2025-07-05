@@ -1,20 +1,20 @@
+import argparse
 import asyncio
 from pathlib import Path
-from typing import Tuple
+
+from speech2caret.config import get_config
 
 
 def validate_inputs(keyboard_device_path: Path, start_stop_key: str, resume_pause_key: str, audio_fp: Path) -> None:
     """Validate and return the inputs for the main function."""
+    if not keyboard_device_path:
+        raise ValueError("keyboard_device_path not set")
     if not keyboard_device_path.exists():
-        raise ValueError(f"Keyboard device {keyboard_device_path} does not exist.")
-
-    valid_keys = ["KEY_SCROLLLOCK", "KEY_PAUSE"]  # Add more valid keys as needed
-    if start_stop_key not in valid_keys:
-        raise ValueError(f"Invalid start/stop key: {start_stop_key}. Valid keys are: {valid_keys}")
-
-    if resume_pause_key not in valid_keys:
-        raise ValueError(f"Invalid resume/pause key: {resume_pause_key}. Valid keys are: {valid_keys}")
-
+        raise ValueError(f"Keyboard device does not exist: {keyboard_device_path}")
+    if not start_stop_key:
+        raise ValueError("start_stop_key not set")
+    if not resume_pause_key:
+        raise ValueError("resume_pause_key not set")
     if audio_fp.suffix != ".wav":
         raise ValueError("Audio file path must have a .wav extension.")
 
@@ -60,37 +60,45 @@ async def listen_keyboard_events(
                         recorder.pause_recording()
 
 
-def main(
-    keyboard_device_path: Path,
-    start_stop_key: str,
-    resume_pause_key: str,
-    audio_fp: Path = Path("/tmp/tmp_audio.wav"),  # nosec
-) -> None:
-    """Use your speech to write the current caret position!
+def main() -> None:
+    """Use your speech to write the current caret position!"""
+    config = get_config()
+    parser = argparse.ArgumentParser(description="Use your speech to write to the current caret position.")
+    parser.add_argument(
+        "--keyboard-device-path",
+        type=Path,
+        default=config.get("speech2caret", "keyboard_device_path", fallback=None),
+        help="Path to the keyboard device.",
+    )
+    parser.add_argument(
+        "--start-stop-key",
+        type=str,
+        default=config.get("speech2caret", "start_stop_key", fallback=None),
+        help="Key to start/stop recording.",
+    )
+    parser.add_argument(
+        "--resume-pause-key",
+        type=str,
+        default=config.get("speech2caret", "resume_pause_key", fallback=None),
+        help="Key to resume/pause recording.",
+    )
+    parser.add_argument(
+        "--audio-fp",
+        type=Path,
+        default=config.get("speech2caret", "audio_fp", fallback="/tmp/tmp_audio.wav"),
+        help="Path to save the temporary audio file.",
+    )
+    args = parser.parse_args()
 
-    Parameters
-    ----------
-    keyboard_device_path
-        Path to the keyboard device (e.g., "/dev/input/eventX").
-        You can find the path by running `ls /dev/input/` and looking for event devices.
-    start_stop_key
-        Keyboard key that when pressed starts/stops is_recording audio.
-    resume_pause_key
-        Keyboard key that when pressed resumes/pauses is_recording audio.
-    audio_fp
-        Path to the audio file where the recorded audio will be saved.
-    """
-    keyboard_device_path = Path(keyboard_device_path)
-    audio_fp = Path(audio_fp)
-    validate_inputs(keyboard_device_path, start_stop_key, resume_pause_key, audio_fp)
-    asyncio.run(listen_keyboard_events(keyboard_device_path, start_stop_key, resume_pause_key, audio_fp))
-
+    validate_inputs(args.keyboard_device_path, args.start_stop_key, args.resume_pause_key, args.audio_fp)
+    asyncio.run(
+        listen_keyboard_events(
+            args.keyboard_device_path,
+            args.start_stop_key,
+            args.resume_pause_key,
+            args.audio_fp,
+        )
+    )
 
 if __name__ == "__main__":
-    import os
-
-    main(
-        keyboard_device_path=Path(os.environ["KEYBOARD_DEVICE_PATH"]),
-        start_stop_key=str(os.getenv("START_STOP_KEY")),
-        resume_pause_key=str(os.getenv("RESUME_PAUSE_KEY")),
-    )
+    main()

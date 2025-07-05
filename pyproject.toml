@@ -6,8 +6,6 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "evdev>=1.9.2",
-    "fire>=0.7.0",
-    "mypy>=1.16.1",
     "sounddevice>=0.5.2",
     "torch>=2.7.1",
     "transformers>=4.53.0",
@@ -42,4 +40,4 @@ dev = [
 ]
 
 [project.scripts]
-speech2caret = "speech2caret.cli:cli"
+speech2caret = "speech2caret.main:main"
