@@ -5,10 +5,10 @@ Use your speech to write to the current caret position!
 Goals:
 
 - ✅ Simple, minimalist.
-- ✅ Local transcription
-- ✅ CPU Optimized
+- ✅ Local transcription.
+- ✅ CPU Optimized.
 
-Note: this has only been test on Linux (Ubuntu), and it unlikely to (currently) support other operating systems. 
+Note: this has only been tested on Linux (Ubuntu), and it is unlikely to (currently) support other operating systems. 
 
 ## Setup
 
