@@ -1,25 +1,24 @@
 import configparser
 from pathlib import Path
 
-APP_NAME = "speech2caret"
-CONFIG_DIR = Path.home() / ".config" / APP_NAME
+
+CONFIG_DIR = Path.home() / ".config/speech2caret"
 CONFIG_FILE = CONFIG_DIR / "config.ini"
 
 
 def get_config() -> configparser.ConfigParser:
-    """
-    Get the application configuration.
+    """Get user configuration.
 
     If the config file doesn't exist, it will be created.
-
-    Returns
-    -------
-        The application configuration.
     """
     CONFIG_DIR.mkdir(exist_ok=True)
-    if not CONFIG_FILE.is_file():
+    config = configparser.ConfigParser()
+
+    if CONFIG_FILE.exists():
+        config.read(CONFIG_FILE)
+
+    else:
         # Create a default config file
-        config = configparser.ConfigParser()
         config["speech2caret"] = {
             "# example:\n# keyboard_device_path": "/dev/input/by-path/pci-0000:00:1.0-usb-0:1:1.0-event-kbd",
             "# start_stop_key": "KEY_F11",
@@ -37,6 +36,4 @@ def get_config() -> configparser.ConfigParser:
             )
             config.write(f)
 
-    config = configparser.ConfigParser()
-    config.read(CONFIG_FILE)
     return config
