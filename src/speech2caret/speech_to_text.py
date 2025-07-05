@@ -1,14 +1,11 @@
-from typing import Dict
+from pathlib import Path
 
 import torch
 from transformers import pipeline  # type: ignore
 
-from speech2caret.recorder import Recorder
-
 
 class SpeechToText:
-    def __init__(self, recorder: Recorder):
-        self.recorder = recorder
+    def __init__(self):
         self.pipe = pipeline(
             "automatic-speech-recognition",
             model="openai/whisper-base.en",
@@ -19,6 +16,6 @@ class SpeechToText:
             ignore_warning=True,  # ignore warnings about chunk length todo explore this further
         )
 
-    def transcribe(self) -> str:
-        result = self.pipe(str(self.recorder.audio_fp), batch_size=1)
+    def transcribe(self, audio_fp: Path) -> str:
+        result = self.pipe(str(audio_fp), batch_size=1)
         return result["text"]  # type: ignore

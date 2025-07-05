@@ -30,7 +30,7 @@ async def listen_keyboard_events(
     from speech2caret.virtual_keyboard import VirtualKeyboard
 
     recorder = Recorder(audio_fp)
-    stt = SpeechToText(recorder)
+    stt = SpeechToText()
     vkeyboard = VirtualKeyboard(keyboard_device_path)
 
     print(f"Listening on {keyboard_device_path}\nStart/Stop: {start_stop_key}\nResume/Pause: {resume_pause_key}")
@@ -45,8 +45,8 @@ async def listen_keyboard_events(
                         asyncio.create_task(recorder.start_recording())
                     else:
                         print("Stopping recording...")
-                        await recorder.stop_recording()
-                        text = stt.transcribe()
+                        recorder.save_recording()
+                        text = stt.transcribe(recorder.audio_fp)
                         print("Transcribed text:", text)
                         vkeyboard.type_text(text)
                         recorder.delete_audio_file()
@@ -57,7 +57,7 @@ async def listen_keyboard_events(
                         asyncio.create_task(recorder.start_recording())
                     else:
                         print("Pausing recording...")
-                        await recorder.stop_recording()
+                        recorder.pause_recording()
 
 
 def main(
@@ -80,6 +80,8 @@ def main(
     audio_fp
         Path to the audio file where the recorded audio will be saved.
     """
+    keyboard_device_path = Path(keyboard_device_path)
+    audio_fp = Path(audio_fp)
     validate_inputs(keyboard_device_path, start_stop_key, resume_pause_key, audio_fp)
     asyncio.run(listen_keyboard_events(keyboard_device_path, start_stop_key, resume_pause_key, audio_fp))
 

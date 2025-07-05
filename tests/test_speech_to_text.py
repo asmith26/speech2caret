@@ -5,11 +5,10 @@ from speech2caret.speech_to_text import SpeechToText
 
 
 def test__transcribe_returns_correctly(fake_audio_fp):
-    recorder = Recorder(audio_fp=fake_audio_fp)
-    recorder.audio_fp = Path(__file__).parent / "data/jfk.flac"
-    stt = SpeechToText(recorder)
+    test_fp = Path(__file__).parent / "data/jfk.flac"
+    stt = SpeechToText()
 
     assert (
-        stt.transcribe()
+        stt.transcribe(test_fp)
         == " And so my fellow Americans, ask not what your country can do for you, ask what you can do for your country."
     )

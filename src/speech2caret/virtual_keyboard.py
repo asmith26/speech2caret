@@ -31,8 +31,8 @@ class VirtualKeyboard:
         self.device.write(evdev.ecodes.EV_KEY, evdev.ecodes.ecodes[key_event], 0)
         if shift:
             self.device.write(evdev.ecodes.EV_KEY, evdev.ecodes.KEY_LEFTSHIFT, 0)
-        # self.device.syn() todo
-        # time.sleep(0.01) todo
+        self.device.syn()  # process the above (seems to help prevent the letters from getting jumbled up)
+        time.sleep(0.01)  # this prevents the letters from getting jumbled up
 
     def type_text(self, text: str) -> None:
         for char in text.strip():
