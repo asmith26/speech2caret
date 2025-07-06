@@ -1,9 +1,8 @@
 [project]
 name = "speech2caret"
-version = "0.1.0a6"
+version = "0.1.0a7"
 authors = [{name = "asmith26"}]
 description = "Use your speech to write to the current caret position!"
-url = "https://github.com/asmith26/speech2caret"
 readme = "README.md"
 requires-python = ">=3.13"
 classifiers = [
@@ -11,6 +10,7 @@ classifiers = [
     "Programming Language :: Python :: 3.13",
 ]
 license = "Apache-2.0"
+keywords = ["speech recognition", "speech to text", "caret", "artificial intelligence"]
 dependencies = [
     "evdev>=1.9.2",
     "loguru>=0.7.3",
@@ -18,6 +18,9 @@ dependencies = [
     "torch>=2.7.1",
     "transformers>=4.53.0",
 ]
+
+[project.urls]
+Homepage = "https://github.com/asmith26/speech2caret"
 
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu" }]
