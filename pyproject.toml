@@ -1,9 +1,18 @@
 [project]
 name = "speech2caret"
-version = "0.1.0"
-description = "Add your description here"
+version = "0.1.0a2"
+authors = ["asmith26"]
+description = "Use your speech to write to the current caret position!"
+homepage = "https://github.com/asmith26/speech2caret"
+repository = "https://github.com/asmith26/speech2caret"
 readme = "README.md"
 requires-python = ">=3.13"
+classifiers = [
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3.13",
+]
+license = "Apache-2.0"
+license-files = ['LICENSE']
 dependencies = [
     "evdev>=1.9.2",
     "loguru>=0.7.3",
