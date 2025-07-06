@@ -1,6 +1,6 @@
 [project]
 name = "speech2caret"
-version = "0.1.0a2"
+version = "0.1.0a3"
 authors = [{name = "asmith26"}]
 description = "Use your speech to write to the current caret position!"
 homepage = "https://github.com/asmith26/speech2caret"
