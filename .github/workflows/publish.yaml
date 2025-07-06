@@ -1,5 +1,4 @@
 name: Publish Python Package to PyPI
-
 on:
   workflow_dispatch:
 #  push:
@@ -9,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.get-version.outputs.version }}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
@@ -19,6 +20,13 @@ jobs:
         enable-cache: true
         cache-dependency-glob: "uv.lock"
 
+    - name: Get version from pyproject.toml
+      id: get-version
+      run: |
+        VERSION=$(uv run python -c "import tomllib; print(tomllib.load(open('pyproject.toml', 'rb'))['project']['version'])")
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Found version: $VERSION"
+
     - name: Build package
       run: make package-build
 
@@ -28,9 +36,44 @@ jobs:
         name: python-package-distributions
         path: dist/
 
-  publish:
+  create-release:
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        name: python-package-distributions
+        path: dist/
+
+    - name: Create GitHub Release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ needs.build.outputs.version }}
+        release_name: Release v${{ needs.build.outputs.version }}
+        draft: false
+        prerelease: true
+
+    - name: Upload release assets
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: dist/
+        asset_name: python-package-distributions
+        asset_content_type: application/zip
+
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build, create-release]
     permissions:
       # IMPORTANT: this permission is mandatory for Trusted Publishing
       id-token: write
