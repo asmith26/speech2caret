@@ -59,7 +59,7 @@ jobs:
         tag_name: v${{ needs.build.outputs.version }}
         release_name: Release v${{ needs.build.outputs.version }}
         draft: false
-        prerelease: true
+        prerelease: false
 
   publish:
     runs-on: ubuntu-latest
