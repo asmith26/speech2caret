@@ -51,9 +51,9 @@ async def listen_keyboard_events(
 
         try:
             async for event in vkeyboard.device.async_read_loop():
-                if event.type == evdev.ecodes.EV_KEY:
+                if event.type == evdev.ecodes.EV_KEY:  # if input event is a keyboard key event
                     key_event: evdev.KeyEvent = evdev.categorize(event)  # type: ignore
-                    if key_event.keystate == 1:
+                    if key_event.keystate == evdev.events.KeyEvent.key_down:
                         if key_event.keycode == start_stop_key:
                             if not recorder.is_recording:
                                 logger.info("=== Start recording ===")
@@ -75,6 +75,7 @@ async def listen_keyboard_events(
                                 recorder.pause_recording()
                             elif not recorder.is_recording and not recorder.is_paused:
                                 logger.warning("You must start recording before resume/pause")
+
         except Exception:
             logger.exception("An unexpected error occurred in the event loop.")
 
