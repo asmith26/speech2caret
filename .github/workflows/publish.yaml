@@ -31,5 +31,9 @@ jobs:
       id-token: write
     steps:
       # retrieve your distributions here
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          packages-dir: custom-dir/
