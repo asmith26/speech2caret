@@ -1,0 +1,34 @@
+<!-- Build with Claude 4 -->
+<svg width="300" height="200" viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- White background -->
+  <rect width="300" height="200" fill="white"/>
+  
+  <!-- Sound waves (left side) -->
+  <path d="M 75 88 Q 65 100 75 112" stroke="#1e9fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M 65 83 Q 50 100 65 117" stroke="#1e9fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- Sound waves (right side) -->
+  <path d="M 125 88 Q 135 100 125 112" stroke="#1e9fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+  <path d="M 135 83 Q 150 100 135 117" stroke="#1e9fff" stroke-width="4" fill="none" stroke-linecap="round"/>
+  
+  <!-- Microphone -->
+  <!-- Mic capsule -->
+  <ellipse cx="100" cy="85" rx="18" ry="28" fill="#1e9fff"/>
+  
+  <!-- Mic stand -->
+  <rect x="98" y="113" width="4" height="25" fill="#1e9fff"/>
+  
+  <!-- Mic base -->
+  <rect x="88" y="138" width="24" height="8" rx="4" fill="#1e9fff"/>
+  
+  <!-- Arrow -->
+  <path d="M 175 95 L 210 95 M 200 85 L 210 95 L 200 105" stroke="#1e9fff" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  
+  <!-- Blinking cursor -->
+  <rect x="250" y="70" width="4" height="60" fill="#1e9fff">
+    <animate attributeName="opacity" values="1;0;1" dur="1s" repeatCount="indefinite"/>
+  </rect>
+  
+  <!-- Text -->
+  <text x="150" y="180" text-anchor="middle" fill="#1e9fff" font-family="Arial, sans-serif" font-size="18" font-weight="bold">speech2caret</text>
+</svg>

@@ -1,0 +1,45 @@
+[project]
+name = "speech2caret"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "evdev>=1.9.2",
+    "loguru>=0.7.3",
+    "sounddevice>=0.5.2",
+    "torch>=2.7.1",
+    "transformers>=4.53.0",
+]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu" }]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[dependency-groups]
+dev = [
+    "bandit>=1.8.5",
+    "mypy>=1.16.1",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.0.0",
+    "pytest-cov>=6.2.1",
+    "pytest-xdist>=3.7.0",
+    "ruff>=0.12.1",
+]
+
+[project.optional-dependencies]
+benchmark = [
+    "jiwer>=4.0.0",
+    "pandas>=2.3.0",
+]
+
+[project.scripts]
+speech2caret = "speech2caret.main:main"
+
+[build-system]
+requires = ["uv_build>=0.7.19,<0.8.0"]
+build-backend = "uv_build"

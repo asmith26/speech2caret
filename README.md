@@ -1,0 +1,96 @@
+# speech2caret
+
+<p align="center">
+    <img src="./assets/speech2caret_logo.svg" alt="speech2caret logo" width="250"/>
+</p>
+<p align="center">
+Use your speech to write to the current caret position!
+</p>
+
+
+## Goals
+
+- ✅ **Simple**: A minimalist tool that does one thing well.
+- ✅ **Private**: Your voice data is processed locally and is never sent to the cloud.
+- ✅ **Efficient**: Optimised for low CPU and memory usage (built using event-driven architecture to react instantly to key presses without wasting system resources).
+
+**Note**: This tool has only been tested on Linux (Ubuntu). It is not expected to work on other operating systems (at this time).
+
+## Installation
+
+### 1. System Dependencies
+
+First, install the required system libraries:
+
+```bash
+sudo apt update
+sudo apt install libportaudio2 ffmpeg
+```
+
+### 2. Grant Permissions
+
+To read keyboard events and type text, the tool needs access to your keyboard input device. Add your user to the `input` group to grant the necessary permissions:
+
+```bash
+sudo usermod -aG input $USER
+newgrp input  # or log out and log back in 
+```
+    
+### 3. Install and Run
+
+You can install and run `speech2caret` using `pip` or `uv`:
+
+```bash
+# Install the package
+uv add speech2caret  # or pip install speech2caret
+
+# Run the application
+speech2caret
+```
+
+Alternatively, you can run it directly without installation using `uvx`:
+```bash
+uvx --from speech2caret speech2caret
+```
+
+## Configuration
+
+The first time you run `speech2caret`, it will create a configuration file at `~/.config/speech2caret/config.ini`.
+
+You must edit this file to set the following options:
+
+#### `keyboard_device_path`
+This is the path to your keyboard input device. You can find the path either following [this](https://python-evdev.readthedocs.io/en/latest/usage.html#listing-accessible-event-devices), or by running the command below and looking for an entry that ends with `-event-kbd`.
+
+```bash
+ls /dev/input/by-path/
+```
+
+#### `start_stop_key` and `resume_pause_key`
+These are the names of the keys you'll press to control the application.
+
+To find the correct name for a key, you can use the provided Python script below. First, ensure you have your `keyboard_device_path` from the step above, then run this command:
+
+```bash
+uvx --from evdev python -c '
+keyboard_device_path = "PASTE_YOUR_KEYBOARD_DEVICE_PATH_HERE"
+
+from evdev import InputDevice, categorize, ecodes, KeyEvent
+dev = InputDevice(keyboard_device_path)
+print(f"Listening for key presses on {dev.name}...")
+for event in dev.read_loop():
+    if event.type == ecodes.EV_KEY:
+        key_event = categorize(event)
+        if key_event.keystate == KeyEvent.key_down:
+            print(f" {key_event.keycode}")
+'
+```
+Press the keys you wish to use, and their names will be printed to the terminal. For a full list of available key names, see [here](https://github.com/torvalds/linux/blob/a79a588fc1761dc12a3064fc2f648ae66cea3c5a/include/uapi/linux/input-event-codes.h#L65).
+
+## How to Use
+
+1.  Run the `speech2caret` command in your terminal.
+2.  Press your configured `start_stop_key` to begin recording.
+3.  Press the `resume_pause_key` to toggle between pausing and resuming.
+4.  When you are finished, press the `start_stop_key` again.
+5.  The recorded audio will be transcribed and typed at your current caret position.
