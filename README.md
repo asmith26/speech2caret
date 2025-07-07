@@ -11,7 +11,7 @@ Use your speech to write to the current caret position!
 ## Goals
 
 - ✅ **Simple**: A minimalist tool that does one thing well.
-- ✅ **Local**: Runs locally (e.g. speech recognition uses [Hugging Face models](https://huggingface.co/models)).
+- ✅ **Local**: Runs locally (speech recognition uses [Hugging Face models](https://huggingface.co/models)).
 - ✅ **Efficient**: Optimised for low CPU and memory usage (built using event-driven architecture to react instantly to key presses without wasting system resources).
 
 **Note**: This tool has only been tested on Linux (Ubuntu). It is not expected to work on other operating systems (at this time).
