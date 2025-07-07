@@ -11,7 +11,7 @@ Use your speech to write to the current caret position!
 ## Goals
 
 - ✅ **Simple**: A minimalist tool that does one thing well.
-- ✅ **Private**: Your voice data is processed locally and is never sent to the cloud.
+- ✅ **Local**: Runs locally (e.g. speech recognition uses [Hugging Face models](https://huggingface.co/models)).
 - ✅ **Efficient**: Optimised for low CPU and memory usage (built using event-driven architecture to react instantly to key presses without wasting system resources).
 
 **Note**: This tool has only been tested on Linux (Ubuntu). It is not expected to work on other operating systems (at this time).
@@ -29,7 +29,7 @@ sudo apt install libportaudio2 ffmpeg
 
 ### 2. Grant Permissions
 
-To read keyboard events and type text, the tool needs access to your keyboard input device. Add your user to the `input` group to grant the necessary permissions:
+To read keyboard events and type text, [`evdev`](https://python-evdev.readthedocs.io/en/latest/usage.html#listing-accessible-event-devices) needs access to your keyboard input device. Add your user to the `input` group to grant the necessary permissions:
 
 ```bash
 sudo usermod -aG input $USER
