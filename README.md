@@ -50,7 +50,7 @@ speech2caret
 
 Alternatively, you can run it directly without installation using `uvx`:
 ```bash
-uvx --from speech2caret speech2caret
+uvx --index pytorch-cpu=https://download.pytorch.org/whl/cpu --from speech2caret speech2caret
 ```
 
 ## Configuration
