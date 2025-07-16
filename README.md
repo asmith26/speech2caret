@@ -11,10 +11,10 @@ Use your speech to write to the current caret position!
 ## Goals
 
 - ✅ **Simple**: A minimalist tool that does one thing well.
-- ✅ **Local**: Runs locally (speech recognition uses [Hugging Face models](https://huggingface.co/models)).
-- ✅ **Efficient**: Optimised for low CPU and memory usage (built using event-driven architecture to react instantly to key presses without wasting system resources).
+- ✅ **Local**: Runs entirely on your machine (uses [Hugging Face models](https://huggingface.co/models) for speech recognition).
+- ✅ **Efficient**: Optimized for low CPU and memory usage, thanks to an event-driven architecture that responds instantly to key presses without wasting resources.
 
-**Note**: This tool has only been tested on Linux (Ubuntu). It is not expected to work on other operating systems (at this time).
+**Note**: Tested only on Linux (Ubuntu). Other operating systems are currently unsupported.
 
 ## Installation
 
@@ -29,11 +29,11 @@ sudo apt install libportaudio2 ffmpeg
 
 ### 2. Grant Permissions
 
-To read keyboard events and type text, [`evdev`](https://python-evdev.readthedocs.io/en/latest/usage.html#listing-accessible-event-devices) needs access to your keyboard input device. Add your user to the `input` group to grant the necessary permissions:
+To read keyboard events and simulate key presses, [`evdev`](https://python-evdev.readthedocs.io/en/latest/usage.html#listing-accessible-event-devices) needs access to your keyboard input device. Add your user to the `input` group to grant the necessary permissions:
 
 ```bash
 sudo usermod -aG input $USER
-newgrp input  # or log out and log back in 
+newgrp input  # or log out and back in 
 ```
     
 ### 3. Install and Run
@@ -48,16 +48,17 @@ uv add speech2caret  # or pip install speech2caret
 speech2caret
 ```
 
-Alternatively, you can run it directly without installation using `uvx`:
+Alternatively, you can run it directly without installation using `uvx`(the `--index pytorch-cpu=...` flag ensures only CPU packages are downloaded, avoiding GPU-related dependencies):
+
 ```bash
 uvx --index pytorch-cpu=https://download.pytorch.org/whl/cpu --from speech2caret speech2caret
 ```
 
 ## Configuration
 
-The first time you run `speech2caret`, it will create a configuration file at `~/.config/speech2caret/config.ini`.
+The first time you run `speech2caret`, it creates a config file at `~/.config/speech2caret/config.ini`.
 
-You must edit this file to set the following options:
+You’ll need to manually edit it with the following values:
 
 #### `keyboard_device_path`
 This is the path to your keyboard input device. You can find the path either following [this](https://python-evdev.readthedocs.io/en/latest/usage.html#listing-accessible-event-devices), or by running the command below and looking for an entry that ends with `-event-kbd`.
@@ -67,7 +68,7 @@ ls /dev/input/by-path/
 ```
 
 #### `start_stop_key` and `resume_pause_key`
-These are the names of the keys you'll press to control the application.
+These are the keys you'll use to control the app.
 
 To find the correct name for a key, you can use the provided Python script below. First, ensure you have your `keyboard_device_path` from the step above, then run this command:
 
