@@ -55,7 +55,7 @@ async def listen_keyboard_events(
                     key_event: evdev.KeyEvent = evdev.categorize(event)  # type: ignore
                     if key_event.keystate == evdev.events.KeyEvent.key_down:
                         if key_event.keycode == start_stop_key:
-                            if not recorder.is_recording:
+                            if not recorder.is_recording and not recorder.is_paused:
                                 logger.info("=== Start recording ===")
                                 asyncio.create_task(recorder.start_recording())
                             else:
