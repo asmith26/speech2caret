@@ -13,7 +13,7 @@ class Recorder:
     def __init__(self, audio_fp: Path):
         self.audio_fp = audio_fp
         self.channels = 2  # stereo
-        self.sampwith = 2  # 2 bytes (16-bit audio)
+        self.sampwidth = 2  # 2 bytes (16-bit audio)
         self.sample_rate = 44100
         self.audio_format = "int16"
         self.audio_data: List[np.ndarray] = []
@@ -59,16 +59,12 @@ class Recorder:
         # Signal the event to stop the recording loop.
         self._stop_event.set()
 
-        if not self.audio_fp:
-            logger.warning("No audio data recorded. Not saving.")
+        # Convert the list to a numpy array
+        audio_data = np.concatenate(self.audio_data, axis=0)
 
-        else:
-            # Convert the list to a numpy array
-            audio_data = np.concatenate(self.audio_data, axis=0)
-
-            # Save the recorded data as a WAV file
-            with wave.open(str(self.audio_fp), "wb") as wf:
-                wf.setnchannels(self.channels)
-                wf.setsampwidth(self.sampwith)
-                wf.setframerate(self.sample_rate)
-                wf.writeframes(audio_data.tobytes())
+        # Save the recorded data as a WAV file
+        with wave.open(str(self.audio_fp), "wb") as wf:
+            wf.setnchannels(self.channels)
+            wf.setsampwidth(self.sampwidth)
+            wf.setframerate(self.sample_rate)
+            wf.writeframes(audio_data.tobytes())

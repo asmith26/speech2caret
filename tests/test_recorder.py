@@ -49,7 +49,7 @@ async def test_recording_cycle(fake_audio_fp):
     with wave.open(str(fake_audio_fp), "rb") as wf:
         # Check audio file settings
         assert wf.getnchannels() == recorder.channels
-        assert wf.getsampwidth() == recorder.sampwith
+        assert wf.getsampwidth() == recorder.sampwidth
         assert wf.getframerate() == recorder.sample_rate
 
         # Check if the recorded data matches the dummy_data
