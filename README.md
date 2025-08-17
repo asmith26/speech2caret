@@ -16,7 +16,7 @@ Use your speech to write to the current caret position!
 
 **Note**: Tested only on Linux (Ubuntu). Other operating systems are currently unsupported.
 
-[    ](https://github.com/user-attachments/assets/6de72da8-0aa2-40c4-802d-82772881c862)
+[demo video](https://github.com/user-attachments/assets/6de72da8-0aa2-40c4-802d-82772881c862)
 
 ## Installation
 
