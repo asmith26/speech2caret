@@ -1,7 +1,7 @@
 # speech2caret
 
 <p align="center">
-    <img src="https://github.com/asmith26/speech2caret/raw/refs/heads/main/assets/speech2caret_logo.svg" alt="speech2caret logo" width="200"/>
+    <img src="https://github.com/asmith26/speech2caret/raw/refs/heads/main/assets/speech2caret_logo.svg" alt="speech2caret logo" width="250"/>
 </p>
 <p align="center">
 Use your speech to write to the current caret position!
