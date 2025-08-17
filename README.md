@@ -1,7 +1,7 @@
 # speech2caret
 
 <p align="center">
-    <img src="https://github.com/asmith26/speech2caret/raw/refs/heads/main/assets/speech2caret_logo.svg" alt="speech2caret logo" width="250"/>
+    <img src="https://github.com/asmith26/speech2caret/raw/refs/heads/main/assets/speech2caret_logo.svg" alt="speech2caret logo" width="200"/>
 </p>
 <p align="center">
 Use your speech to write to the current caret position!
@@ -15,6 +15,8 @@ Use your speech to write to the current caret position!
 - ✅ **Efficient**: Optimized for low CPU and memory usage, thanks to an event-driven architecture that responds instantly to key presses without wasting resources.
 
 **Note**: Tested only on Linux (Ubuntu). Other operating systems are currently unsupported.
+
+[    ](https://github.com/user-attachments/assets/6de72da8-0aa2-40c4-802d-82772881c862)
 
 ## Installation
 
