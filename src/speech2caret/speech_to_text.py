@@ -1,7 +1,7 @@
 from pathlib import Path
 
 import torch
-from transformers import pipeline  # type: ignore
+from transformers import pipeline
 
 
 class SpeechToText:
