@@ -8,7 +8,7 @@ from speech2caret.utils import play_audio, transcribe_and_type
 
 class TestPlayAudio:
     @mock.patch("subprocess.run")
-    def test_play_audio_calls_paplay(self, mock_subprocess_run, tmp_path):
+    def test_calls_paplay(self, mock_subprocess_run, tmp_path):
         """Test that play_audio calls paplay with the correct file path."""
         audio_file = tmp_path / "test.wav"
         audio_file.touch()
@@ -18,14 +18,14 @@ class TestPlayAudio:
         mock_subprocess_run.assert_called_once_with(["paplay", audio_file])
 
     @mock.patch("subprocess.run")
-    def test_play_audio_file_does_not_exist(self, mock_subprocess_run):
+    def test_file_does_not_exist(self, mock_subprocess_run):
         """Test that play_audio does not call paplay if the file does not exist."""
         audio_fp = Path("/path/to/nonexistent/file.wav")
         play_audio(audio_fp)
         mock_subprocess_run.assert_not_called()
 
     @mock.patch("subprocess.run")
-    def test_play_audio_is_directory(self, mock_subprocess_run, tmp_path):
+    def test_is_directory(self, mock_subprocess_run, tmp_path):
         """Test that play_audio does not call paplay if the path is a directory."""
         play_audio(tmp_path)
         mock_subprocess_run.assert_not_called()
