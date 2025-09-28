@@ -94,9 +94,9 @@ Press the keys you wish to use, and their names will be printed to the terminal.
 
 ### Additional (Optional) Configuration
 
-You can also configure audio cues to notify you when recording has started, stopped, paused, or resumed. To do this, update 
+You can configure audio cues to notify when recording has started, stopped, paused, or resumed. To do this, update 
 the `start_recording_audio_path`, `stop_recording_audio_path`, `resume_recording_audio_path`, and `pause_recording_audio_path`
-variables in the `config variables in `~/.config/speech2caret/config.ini` with the absolute paths to your audio files.
+config variables in `~/.config/speech2caret/config.ini` with the absolute paths to your choice of audio files.
 
 ## How to Use
 
