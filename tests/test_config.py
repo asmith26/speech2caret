@@ -1,9 +1,10 @@
 import configparser
+from pathlib import Path
 from unittest import mock
 
 import pytest
 
-from speech2caret.config import get_config
+from speech2caret.config import Config, get_config
 
 
 @pytest.fixture
@@ -15,32 +16,108 @@ def mock_config_dir(tmp_path):
         yield tmp_path
 
 
-def test_get_config_creates_file(mock_config_dir):
-    config_file = mock_config_dir / "config.ini"
-    assert not config_file.exists()
-
-    config = get_config()
-
-    assert config_file.exists()
-    assert isinstance(config, configparser.ConfigParser)
-    assert "speech2caret" in config
-    assert config["speech2caret"].get("keyboard_device_path") == ""
-    assert config["speech2caret"].get("start_stop_key") == ""
-    assert config["speech2caret"].get("resume_pause_key") == ""
-
-
-def test_get_config_reads_existing_file(mock_config_dir):
-    # Pre-create config file with known values
-    config = configparser.ConfigParser()
-    config["speech2caret"] = {
-        "keyboard_device_path": "/dev/test",
-        "start_stop_key": "KEY_F1",
-        "resume_pause_key": "KEY_F2",
+@pytest.fixture
+def mock_valid_config_parser():
+    parser = configparser.ConfigParser()
+    parser["speech2caret"] = {
+        "keyboard_device_path": "/dev/null",
+        "start_stop_key": "KEY_A",
+        "resume_pause_key": "KEY_B",
+        "start_recording_audio_path": "",
+        "stop_recording_audio_path": "",
+        "resume_recording_audio_path": "",
+        "pause_recording_audio_path": "",
     }
-    with open(mock_config_dir / "config.ini", "w") as f:
-        config.write(f)
+    return parser
 
-    loaded_config = get_config()
-    assert loaded_config["speech2caret"].get("keyboard_device_path") == "/dev/test"
-    assert loaded_config["speech2caret"].get("start_stop_key") == "KEY_F1"
-    assert loaded_config["speech2caret"].get("resume_pause_key") == "KEY_F2"
+
+class TestGetConfig:
+    def test_creates_file_and_exits_when_invalid(self, mock_config_dir):
+        """
+        Test that get_config creates a config file if one doesn't exist,
+        and then exits because the default config is invalid.
+        """
+        config_file = mock_config_dir / "config.ini"
+        assert not config_file.exists()
+
+        with pytest.raises(SystemExit) as e:
+            get_config()
+
+        assert e.value.code == 1
+        assert config_file.exists()
+
+    def test_reads_existing_valid_file(self, mock_config_dir):
+        """Test that get_config reads an existing and valid config file."""
+        config_file = mock_config_dir / "config.ini"
+        config = configparser.ConfigParser()
+        config["speech2caret"] = {
+            "keyboard_device_path": "/dev/null",  # /dev/null should exist
+            "start_stop_key": "KEY_F1",
+            "resume_pause_key": "KEY_F2",
+            "start_recording_audio_path": "",
+            "stop_recording_audio_path": "",
+            "resume_recording_audio_path": "",
+            "pause_recording_audio_path": "",
+        }
+        with open(config_file, "w") as f:
+            config.write(f)
+
+        loaded_config = get_config()
+        assert loaded_config.keyboard_device_path == Path("/dev/null")
+        assert loaded_config.start_stop_key == "KEY_F1"
+        assert loaded_config.resume_pause_key == "KEY_F2"
+
+
+class TestConfigInit:
+    def test_valid_config(self, mock_valid_config_parser):
+        """Test that a valid config is parsed correctly."""
+        config = Config(mock_valid_config_parser)
+        assert config.keyboard_device_path == Path("/dev/null")
+        assert config.start_stop_key == "KEY_A"
+        assert config.resume_pause_key == "KEY_B"
+        assert config.start_recording_audio_path == Path(".")
+        assert config.stop_recording_audio_path == Path(".")
+        assert config.resume_recording_audio_path == Path(".")
+        assert config.pause_recording_audio_path == Path(".")
+
+    def test_with_audio_paths(self, mock_valid_config_parser):
+        """Test that audio paths are parsed correctly."""
+        mock_valid_config_parser["speech2caret"]["start_recording_audio_path"] = "/path/to/start.wav"
+        mock_valid_config_parser["speech2caret"]["stop_recording_audio_path"] = "/path/to/stop.wav"
+        mock_valid_config_parser["speech2caret"]["resume_recording_audio_path"] = "/path/to/resume.wav"
+        mock_valid_config_parser["speech2caret"]["pause_recording_audio_path"] = "/path/to/pause.wav"
+
+        config = Config(mock_valid_config_parser)
+
+        assert config.start_recording_audio_path == Path("/path/to/start.wav")
+        assert config.stop_recording_audio_path == Path("/path/to/stop.wav")
+        assert config.resume_recording_audio_path == Path("/path/to/resume.wav")
+        assert config.pause_recording_audio_path == Path("/path/to/pause.wav")
+
+    def test_no_keyboard_device_path(self, mock_valid_config_parser):
+        """Test that SystemExit is raised when keyboard_device_path is missing."""
+        mock_valid_config_parser["speech2caret"]["keyboard_device_path"] = ""
+        with pytest.raises(SystemExit) as e:
+            Config(mock_valid_config_parser)
+        assert e.value.code == 1
+
+    def test_nonexistent_keyboard_device_path(self, mock_valid_config_parser):
+        """Test that SystemExit is raised when keyboard_device_path does not exist."""
+        mock_valid_config_parser["speech2caret"]["keyboard_device_path"] = "/dev/nonexistent"
+        with pytest.raises(SystemExit) as e:
+            Config(mock_valid_config_parser)
+        assert e.value.code == 1
+
+    def test_no_start_stop_key(self, mock_valid_config_parser):
+        """Test that SystemExit is raised when start_stop_key is missing."""
+        mock_valid_config_parser["speech2caret"]["start_stop_key"] = ""
+        with pytest.raises(SystemExit) as e:
+            Config(mock_valid_config_parser)
+        assert e.value.code == 1
+
+    def test_no_resume_pause_key(self, mock_valid_config_parser):
+        """Test that SystemExit is raised when resume_pause_key is missing."""
+        mock_valid_config_parser["speech2caret"]["resume_pause_key"] = ""
+        with pytest.raises(SystemExit) as e:
+            Config(mock_valid_config_parser)
+        assert e.value.code == 1
