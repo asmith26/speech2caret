@@ -92,6 +92,12 @@ for event in dev.read_loop():
 ```
 Press the keys you wish to use, and their names will be printed to the terminal. For a full list of available key names, see [here](https://github.com/torvalds/linux/blob/a79a588fc1761dc12a3064fc2f648ae66cea3c5a/include/uapi/linux/input-event-codes.h#L65).
 
+### Additional (Optional) Configuration
+
+You can also configure audio cues to notify you when recording has started, stopped, paused, or resumed. To do this, update 
+the `start_recording_audio_path`, `stop_recording_audio_path`, `resume_recording_audio_path`, and `pause_recording_audio_path`
+variables in the `config variables in `~/.config/speech2caret/config.ini` with the absolute paths to your audio files.
+
 ## How to Use
 
 1.  Run the `speech2caret` command in your terminal.

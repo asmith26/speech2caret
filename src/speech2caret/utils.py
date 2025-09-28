@@ -10,7 +10,8 @@ from speech2caret.virtual_keyboard import VirtualKeyboard
 
 
 def play_audio(audio_fp: str | Path) -> None:
-    subprocess.run(["paplay", audio_fp])
+    if audio_fp.exists() and audio_fp.is_file():
+        subprocess.run(["paplay", audio_fp])
 
 
 async def transcribe_and_type(recorder: Recorder, stt: SpeechToText, vkeyboard: VirtualKeyboard) -> None:
