@@ -31,41 +31,41 @@ def mock_valid_config_parser():
     return parser
 
 
-def test_get_config_creates_file_and_exits_when_invalid(mock_config_dir):
-    """
-    Test that get_config creates a config file if one doesn't exist,
-    and then exits because the default config is invalid.
-    """
-    config_file = mock_config_dir / "config.ini"
-    assert not config_file.exists()
+class TestGetConfig:
+    def test_creates_file_and_exits_when_invalid(self, mock_config_dir):
+        """
+        Test that get_config creates a config file if one doesn't exist,
+        and then exits because the default config is invalid.
+        """
+        config_file = mock_config_dir / "config.ini"
+        assert not config_file.exists()
 
-    with pytest.raises(SystemExit) as e:
-        get_config()
+        with pytest.raises(SystemExit) as e:
+            get_config()
 
-    assert e.value.code == 1
-    assert config_file.exists()
+        assert e.value.code == 1
+        assert config_file.exists()
 
+    def test_reads_existing_valid_file(self, mock_config_dir):
+        """Test that get_config reads an existing and valid config file."""
+        config_file = mock_config_dir / "config.ini"
+        config = configparser.ConfigParser()
+        config["speech2caret"] = {
+            "keyboard_device_path": "/dev/null",  # /dev/null should exist
+            "start_stop_key": "KEY_F1",
+            "resume_pause_key": "KEY_F2",
+            "start_recording_audio_path": "",
+            "stop_recording_audio_path": "",
+            "resume_recording_audio_path": "",
+            "pause_recording_audio_path": "",
+        }
+        with open(config_file, "w") as f:
+            config.write(f)
 
-def test_get_config_reads_existing_valid_file(mock_config_dir):
-    """Test that get_config reads an existing and valid config file."""
-    config_file = mock_config_dir / "config.ini"
-    config = configparser.ConfigParser()
-    config["speech2caret"] = {
-        "keyboard_device_path": "/dev/null",  # /dev/null should exist
-        "start_stop_key": "KEY_F1",
-        "resume_pause_key": "KEY_F2",
-        "start_recording_audio_path": "",
-        "stop_recording_audio_path": "",
-        "resume_recording_audio_path": "",
-        "pause_recording_audio_path": "",
-    }
-    with open(config_file, "w") as f:
-        config.write(f)
-
-    loaded_config = get_config()
-    assert loaded_config.keyboard_device_path == Path("/dev/null")
-    assert loaded_config.start_stop_key == "KEY_F1"
-    assert loaded_config.resume_pause_key == "KEY_F2"
+        loaded_config = get_config()
+        assert loaded_config.keyboard_device_path == Path("/dev/null")
+        assert loaded_config.start_stop_key == "KEY_F1"
+        assert loaded_config.resume_pause_key == "KEY_F2"
 
 
 class TestConfigInit:
