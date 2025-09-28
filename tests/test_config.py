@@ -82,18 +82,10 @@ class TestConfigInit:
 
     def test_with_audio_paths(self, mock_valid_config_parser):
         """Test that audio paths are parsed correctly."""
-        mock_valid_config_parser["speech2caret"][
-            "start_recording_audio_path"
-        ] = "/path/to/start.wav"
-        mock_valid_config_parser["speech2caret"][
-            "stop_recording_audio_path"
-        ] = "/path/to/stop.wav"
-        mock_valid_config_parser["speech2caret"][
-            "resume_recording_audio_path"
-        ] = "/path/to/resume.wav"
-        mock_valid_config_parser["speech2caret"][
-            "pause_recording_audio_path"
-        ] = "/path/to/pause.wav"
+        mock_valid_config_parser["speech2caret"]["start_recording_audio_path"] = "/path/to/start.wav"
+        mock_valid_config_parser["speech2caret"]["stop_recording_audio_path"] = "/path/to/stop.wav"
+        mock_valid_config_parser["speech2caret"]["resume_recording_audio_path"] = "/path/to/resume.wav"
+        mock_valid_config_parser["speech2caret"]["pause_recording_audio_path"] = "/path/to/pause.wav"
 
         config = Config(mock_valid_config_parser)
 

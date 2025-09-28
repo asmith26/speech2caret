@@ -4,7 +4,6 @@ from pathlib import Path
 
 from loguru import logger
 
-
 CONFIG_DIR = Path.home() / ".config/speech2caret"
 CONFIG_FILE = CONFIG_DIR / "config.ini"
 
@@ -19,7 +18,9 @@ class Config:
         self.resume_recording_audio_path: Path = Path(config_parser["speech2caret"]["resume_recording_audio_path"])
         self.pause_recording_audio_path: Path = Path(config_parser["speech2caret"]["pause_recording_audio_path"])
 
-        config_help_message = "Edit the config file (see https://github.com/asmith26/speech2caret/tree/main#configuration)"
+        config_help_message = (
+            "Edit the config file (see https://github.com/asmith26/speech2caret/tree/main#configuration)"
+        )
 
         if self.keyboard_device_path == Path("."):
             logger.error(f"Keyboard device not set. {config_help_message}.")

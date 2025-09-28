@@ -6,11 +6,10 @@ from pathlib import Path
 from loguru import logger
 
 from speech2caret import utils
-from speech2caret.config import get_config, Config
+from speech2caret.config import Config, get_config
 from speech2caret.recorder import Recorder
 from speech2caret.speech_to_text import SpeechToText
 from speech2caret.virtual_keyboard import VirtualKeyboard
-
 
 
 async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
@@ -37,17 +36,13 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
 
         try:
             async for event in vkeyboard.device.async_read_loop():
-
                 # We only need to process key_down events
                 if event.type == evdev.ecodes.EV_KEY:  # if input event is a keyboard key event
                     key_event: evdev.KeyEvent = evdev.categorize(event)  # type: ignore
                     if key_event.keystate == evdev.events.KeyEvent.key_down:
-
                         # === Start/Stop Recording ===
                         if key_event.keycode == config.start_stop_key:
-
                             if not recorder.is_recording and not recorder.is_paused:
-
                                 # If there's an ongoing transcription task from a previous recording,
                                 # cancel it (allows interrupting long transcriptions)
                                 if transcribe_and_type_task and not transcribe_and_type_task.done():
@@ -65,7 +60,9 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
                                 recorder.save_recording()
                                 # utils.play_sound(recorder.audio_fp)  # Play recording
                                 # Start the transcribe_and_type in a new asyncio task so it doesn't block the event loop.
-                                transcribe_and_type_task = asyncio.create_task(utils.transcribe_and_type(recorder, stt, vkeyboard))
+                                transcribe_and_type_task = asyncio.create_task(
+                                    utils.transcribe_and_type(recorder, stt, vkeyboard)
+                                )
 
                         # === Resume/Pause Recording ===
                         elif key_event.keycode == config.resume_pause_key:
