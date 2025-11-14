@@ -28,6 +28,7 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
         logger.info(f"Stop Recording audio path: {config.stop_recording_audio_path}")
         logger.info(f"Resume Recording audio path: {config.resume_recording_audio_path}")
         logger.info(f"Pause Recording audio path: {config.pause_recording_audio_path}")
+        logger.info(f"Word replacements: {config.word_replacements}")
         logger.info(f"Temporary audio file: {tmp_audio_fp}\n")
 
         # This variable will hold the asyncio.Task for the transcription process.

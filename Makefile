@@ -33,7 +33,10 @@ bump-minor:                                      ## Bump minor version (release 
 bump-patch:                                      ## Bump patch version (release candidate)
 	uv version --bump patch --bump rc
 
-bump-stable:                                     ## Bump release candidate version to a stable version
+bump-rc:                                         ## Bump release candidate version
+	uv version --bump rc
+
+bump-stable:                                     ## Bump to a stable version
 	uv version --bump stable
 
 package-build:                                   ## Build Python package
