@@ -49,7 +49,7 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
                                     logger.info("Interrupting transcription...")
                                     transcribe_and_type_task.cancel()
 
-                                logger.info("= Start recording ===")
+                                logger.info("\n=== Start recording ===")
                                 utils.play_audio(config.start_recording_audio_path)
                                 # Start the recording in a new asyncio task so it doesn't block the event loop.
                                 asyncio.create_task(recorder.start_recording())
@@ -61,7 +61,7 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
                                 # utils.play_sound(recorder.audio_fp)  # Play recording
                                 # Start the transcribe_and_type in a new asyncio task so it doesn't block the event loop.
                                 transcribe_and_type_task = asyncio.create_task(
-                                    utils.transcribe_and_type(recorder, stt, vkeyboard)
+                                    utils.transcribe_and_type(recorder, stt, vkeyboard, config)
                                 )
 
                         # === Resume/Pause Recording ===
