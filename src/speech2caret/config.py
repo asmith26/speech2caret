@@ -17,7 +17,10 @@ class Config:
         self.stop_recording_audio_path: Path = Path(config_parser["audio"]["stop_recording_audio_path"])
         self.resume_recording_audio_path: Path = Path(config_parser["audio"]["resume_recording_audio_path"])
         self.pause_recording_audio_path: Path = Path(config_parser["audio"]["pause_recording_audio_path"])
-        self.word_replacements: dict[str, str] = {to_replace.strip("'\""): replacement.strip("'\"") for to_replace, replacement in dict(config_parser["word_replacements"]).items()}
+        self.word_replacements: dict[str, str] = {
+            to_replace.strip("'\""): replacement.strip("'\"")
+            for to_replace, replacement in dict(config_parser["word_replacements"]).items()
+        }
 
         config_help_message = (
             "Edit the config file (see https://github.com/asmith26/speech2caret/tree/main#configuration)"
@@ -66,7 +69,7 @@ def get_config() -> Config:
             "pause_recording_audio_path": "",
         }
         config_parser["word_replacements"] = {
-            '# EXAMPLE\n# "question mark"': "?",
+            "# EXAMPLE\n# 'underscore'": "'_'",
         }
         with open(CONFIG_FILE, "w") as f:
             f.write(

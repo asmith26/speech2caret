@@ -87,7 +87,6 @@ class TestConfigInit:
         assert config.pause_recording_audio_path == Path(".")
         assert config.word_replacements == {}
 
-
     def test_with_audio_paths(self, mock_valid_config_parser):
         """Test that audio paths are parsed correctly."""
         mock_valid_config_parser["audio"]["start_recording_audio_path"] = "/path/to/start.wav"

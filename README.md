@@ -98,6 +98,19 @@ You can configure audio cues to notify when recording has started, stopped, paus
 the `start_recording_audio_path`, `stop_recording_audio_path`, `resume_recording_audio_path`, and `pause_recording_audio_path`
 config variables in `~/.config/speech2caret/config.ini` with the absolute paths to your choice of audio files.
 
+### Word Replacement
+
+You can define custom word or phrase replacements in the `[word_replacement]` section of `~/.config/speech2caret/config.ini` file.
+This allows you to automatically substitute specific spoken words with desired text.
+
+For example, to replace "new line" with a newline character or " underscore " with `_`, you can configure it as follows:
+
+```ini
+[word_replacement]
+"new line" = "\n"
+" underscore " = "_"
+```
+
 ## How to Use
 
 1.  Run the `speech2caret` command in your terminal.
