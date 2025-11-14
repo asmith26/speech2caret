@@ -24,6 +24,18 @@ check-static-all: check-types check-style sast   ## Run all static checks
 
 check-test-all: check-static-all run-tests       ## Run all checks/tests
 
+bump-major:                                      ## Bump major version (release candidate)
+	uv version --bump major --bump rc
+
+bump-minor:                                      ## Bump minor version (release candidate)
+	uv version --bump minor --bump rc
+
+bump-patch:                                      ## Bump patch version (release candidate)
+	uv version --bump patch --bump rc
+
+bump-stable:                                     ## Bump release candidate version to a stable version
+	uv version --bump stable
+
 package-build:                                   ## Build Python package
 	uv build
 
