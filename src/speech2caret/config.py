@@ -10,13 +10,17 @@ CONFIG_FILE = CONFIG_DIR / "config.ini"
 
 class Config:
     def __init__(self, config_parser: configparser.ConfigParser):
-        self.keyboard_device_path: Path = Path(config_parser["speech2caret"]["keyboard_device_path"])
-        self.start_stop_key: str = config_parser["speech2caret"]["start_stop_key"]
-        self.resume_pause_key: str = config_parser["speech2caret"]["resume_pause_key"]
-        self.start_recording_audio_path: Path = Path(config_parser["speech2caret"]["start_recording_audio_path"])
-        self.stop_recording_audio_path: Path = Path(config_parser["speech2caret"]["stop_recording_audio_path"])
-        self.resume_recording_audio_path: Path = Path(config_parser["speech2caret"]["resume_recording_audio_path"])
-        self.pause_recording_audio_path: Path = Path(config_parser["speech2caret"]["pause_recording_audio_path"])
+        self.keyboard_device_path: Path = Path(config_parser["main"]["keyboard_device_path"])
+        self.start_stop_key: str = config_parser["main"]["start_stop_key"]
+        self.resume_pause_key: str = config_parser["main"]["resume_pause_key"]
+        self.start_recording_audio_path: Path = Path(config_parser["audio"]["start_recording_audio_path"])
+        self.stop_recording_audio_path: Path = Path(config_parser["audio"]["stop_recording_audio_path"])
+        self.resume_recording_audio_path: Path = Path(config_parser["audio"]["resume_recording_audio_path"])
+        self.pause_recording_audio_path: Path = Path(config_parser["audio"]["pause_recording_audio_path"])
+        self.word_replacements: dict[str, str] = {
+            to_replace.strip("'\""): replacement.strip("'\"")
+            for to_replace, replacement in dict(config_parser["word_replacements"]).items()
+        }
 
         config_help_message = (
             "Edit the config file (see https://github.com/asmith26/speech2caret/tree/main#configuration)"
@@ -46,21 +50,26 @@ def get_config() -> Config:
 
     # Create a default config file
     if not CONFIG_FILE.is_file():
-        config_parser["speech2caret"] = {
-            "# example:\n# keyboard_device_path": "/dev/input/by-path/pci-0000:00:1.0-usb-0:1:1.0-event-kbd",
+        config_parser["main"] = {
+            "# EXAMPLE\n# keyboard_device_path": "/dev/input/by-path/pci-0000:00:1.0-usb-0:1:1.0-event-kbd",
             "# start_stop_key": "KEY_F11",
             "# resume_pause_key": "KEY_F12",
+            "keyboard_device_path": "",
+            "start_stop_key": "",
+            "resume_pause_key": "",
+        }
+        config_parser["audio"] = {
             "# start_recording_audio_path (optional)": "/path/to/sound.mp3",
             "# stop_recording_audio_path (optional)": "/path/to/another_sound.mp3",
             "# resume_recording_audio_path (optional)": "/path/to/another_sound.mp3",
             "# pause_recording_audio_path (optional)": "/path/to/another_sound.mp3",
-            "keyboard_device_path": "",
-            "start_stop_key": "",
-            "resume_pause_key": "",
             "start_recording_audio_path": "",
             "stop_recording_audio_path": "",
             "resume_recording_audio_path": "",
             "pause_recording_audio_path": "",
+        }
+        config_parser["word_replacements"] = {
+            "# EXAMPLE\n# 'underscore'": "'_'",
         }
         with open(CONFIG_FILE, "w") as f:
             f.write(

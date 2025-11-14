@@ -1,6 +1,6 @@
 [project]
 name = "speech2caret"
-version = "0.2.0"
+version = "0.3.0"
 authors = [{name = "asmith26"}]
 description = "Use your speech to write to the current caret position!"
 readme = "README.md"
@@ -8,6 +8,7 @@ requires-python = ">=3.13"
 classifiers = [
     "Operating System :: POSIX :: Linux",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 license = "Apache-2.0"
 keywords = ["speech recognition", "speech to text", "caret", "artificial intelligence", "cli"]
@@ -15,7 +16,7 @@ dependencies = [
     "evdev>=1.9.2",
     "loguru>=0.7.3",
     "sounddevice>=0.5.2",
-    "torch>=2.7.1",
+    "torch>=2.9.0",
     "transformers>=4.53.0",
 ]
 

@@ -3,7 +3,7 @@ from unittest import mock
 
 import pytest
 
-from speech2caret.utils import play_audio, transcribe_and_type
+from speech2caret.utils import play_audio, replace_words, transcribe_and_type
 
 
 class TestPlayAudio:
@@ -31,6 +31,43 @@ class TestPlayAudio:
         mock_subprocess_run.assert_not_called()
 
 
+class TestReplaceWords:
+    def test_simple_replacement(self):
+        text = "hello world"
+        replacements = {"hello": "goodbye"}
+        assert replace_words(text, replacements) == "goodbye world"
+
+    def test_replacement_with_spaces(self):
+        text = "use the underscore character"
+        replacements = {" underscore ": "_"}
+        assert replace_words(text, replacements) == "use the_character"
+
+    def test_no_substring_replacement(self):
+        text = "this is a test"
+        replacements = {"is": "IS"}
+        assert replace_words(text, replacements) == "this IS a test"
+
+    def test_multiple_replacements(self):
+        text = "hello world, this is a test"
+        replacements = {"hello": "greetings", "test": "demonstration"}
+        assert replace_words(text, replacements) == "greetings world, this is a demonstration"
+
+    def test_case_insensitivity(self):
+        text = "Hello world"
+        replacements = {"hello": "goodbye"}
+        assert replace_words(text, replacements) == "goodbye world"
+
+    def test_phrase_replacement(self):
+        text = "this is a test phrase"
+        replacements = {"a test": "an example"}
+        assert replace_words(text, replacements) == "this is an example phrase"
+
+    def test_empty_replacements(self):
+        text = "hello world"
+        replacements = {}
+        assert replace_words(text, replacements) == "hello world"
+
+
 @pytest.mark.asyncio
 class TestTranscribeAndType:
     async def test_happy_path(self):
@@ -45,7 +82,10 @@ class TestTranscribeAndType:
         mock_vkeyboard = mock.Mock()
         mock_vkeyboard.type_text = mock.Mock()
 
-        await transcribe_and_type(mock_recorder, mock_stt, mock_vkeyboard)
+        mock_config = mock.Mock()
+        mock_config.word_replacements = {}
+
+        await transcribe_and_type(mock_recorder, mock_stt, mock_vkeyboard, mock_config)
 
         mock_stt.transcribe.assert_called_once_with("/path/to/audio.wav")
         mock_vkeyboard.type_text.assert_called_once_with("hello world")
@@ -63,8 +103,11 @@ class TestTranscribeAndType:
         mock_vkeyboard = mock.Mock()
         mock_vkeyboard.type_text = mock.Mock()
 
+        mock_config = mock.Mock()
+        mock_config.word_replacements = {}
+
         with pytest.raises(Exception, match="Transcription failed"):
-            await transcribe_and_type(mock_recorder, mock_stt, mock_vkeyboard)
+            await transcribe_and_type(mock_recorder, mock_stt, mock_vkeyboard, mock_config)
 
         mock_vkeyboard.type_text.assert_not_called()
         mock_recorder.delete_audio_file.assert_called_once()
@@ -81,8 +124,11 @@ class TestTranscribeAndType:
         mock_vkeyboard = mock.Mock()
         mock_vkeyboard.type_text.side_effect = Exception("Typing failed")
 
+        mock_config = mock.Mock()
+        mock_config.word_replacements = {}
+
         with pytest.raises(Exception, match="Typing failed"):
-            await transcribe_and_type(mock_recorder, mock_stt, mock_vkeyboard)
+            await transcribe_and_type(mock_recorder, mock_stt, mock_vkeyboard, mock_config)
 
         mock_stt.transcribe.assert_called_once_with("/path/to/audio.wav")
         mock_recorder.delete_audio_file.assert_called_once()

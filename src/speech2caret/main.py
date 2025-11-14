@@ -28,6 +28,7 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
         logger.info(f"Stop Recording audio path: {config.stop_recording_audio_path}")
         logger.info(f"Resume Recording audio path: {config.resume_recording_audio_path}")
         logger.info(f"Pause Recording audio path: {config.pause_recording_audio_path}")
+        logger.info(f"Word replacements: {config.word_replacements}")
         logger.info(f"Temporary audio file: {tmp_audio_fp}\n")
 
         # This variable will hold the asyncio.Task for the transcription process.
@@ -49,7 +50,7 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
                                     logger.info("Interrupting transcription...")
                                     transcribe_and_type_task.cancel()
 
-                                logger.info("= Start recording ===")
+                                logger.info("\n=== Start recording ===")
                                 utils.play_audio(config.start_recording_audio_path)
                                 # Start the recording in a new asyncio task so it doesn't block the event loop.
                                 asyncio.create_task(recorder.start_recording())
@@ -61,7 +62,7 @@ async def listen_keyboard_events(config: Config) -> None:  # pragma: no cover
                                 # utils.play_sound(recorder.audio_fp)  # Play recording
                                 # Start the transcribe_and_type in a new asyncio task so it doesn't block the event loop.
                                 transcribe_and_type_task = asyncio.create_task(
-                                    utils.transcribe_and_type(recorder, stt, vkeyboard)
+                                    utils.transcribe_and_type(recorder, stt, vkeyboard, config)
                                 )
 
                         # === Resume/Pause Recording ===
