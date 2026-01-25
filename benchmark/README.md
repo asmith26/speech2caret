@@ -1,4 +1,4 @@
 ```bash
-uv synv --extra=benchmark
+uv sync --extra=benchmark
 uv run python benchmark.py
 ```
